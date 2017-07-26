@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+
+<html>
+	<head>
+		<meta charset="utf-8">
+
+		<link rel="stylesheet" href="css/normalize.css" type="text/css" />
+		<link rel="stylesheet" href="css/ion.rangeSlider.css" type="text/css" />
+		<link rel="stylesheet" href="css/ion.rangeSlider.skinCustom.css" type="text/css" />
+
+		<link rel="stylesheet" href="css/fonts.css" type="text/css" />
+		<link rel="stylesheet" href="css/calc.css" type="text/css" />
+
+		<script src="http://code.jquery.com/jquery-3.2.1.min.js"
+		integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="
+		crossorigin="anonymous"></script>
+		<script src="js/ion-rangeSlider/ion.rangeSlider.min.js"></script>
+		<script src="js/calc.js"></script>
+	</head>
+
+	<body>
+		<div id="calc-app">
+			<ul class="tabs">
+				<li class="tab-link current" data-tab="tab-calc">Калькулятор</li>
+				<li class="tab-link" data-tab="tab-mixer">Миксер</li>
+			</ul>	
+
+			<div id="calc" class="calc-form tab-content current">
+				<div class="panel">
+					<div class="panel-label">ОСНОВА</div>
+
+					<div class="panel-row">
+						<label>Глицерин:</label>
+						<input id="vgBase" type="number" align="right" step="5" min="0" max="100" /><span> %</span>
+					</div>
+					<div class="panel-row">
+						<input type="text" id="vgBaseSlider" value="" />
+					</div>
+
+					<div class="panel-row">
+						<label>Пропиленгликоль:</label>
+						<input id="pgBase" type="number" step="5" min="0" max="100" /><span> %</span>
+					</div>
+					<div class="panel-row">
+						<input type="text" id="pgBaseSlider" value="" />
+					</div>
+
+					<div class="panel-row">
+						<label>Разбавитель:</label>
+						<input id="diluentBase" type="number" step="1" min="0" max="50" /><span> %</span>
+					</div>
+					<div class="panel-row">
+						<input type="text" id="diluentBaseSlider" value="" />
+					</div>
+
+					<div class="panel-row">
+						<label>Никотин:</label>
+						<input id="nicBase" type="number" step="1" min="0" max="100" /><span> мг/мл</span>
+					</div>
+					<div class="panel-row">
+						<input type="text" id="nicBaseSlider" value="" />
+					</div>
+				</div>
+
+				<div class="panel" style="display: none;">
+					<input type="number" />
+					<p>Hello!</p>
+				</div>
+
+				<div class="panel" style="display: none;">
+					<input type="number" />
+					<p>Hello!</p>
+				</div>
+			</div>
+			<div id="mixer" class="calc-form tab-content">
+				<div class="panel" style="display: none;">
+					<input type="number" />
+					<p>Hello!</p>
+				</div>
+			</div>
+		</div>
+	</body>
+</html>
