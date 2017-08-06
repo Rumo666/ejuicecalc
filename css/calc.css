@@ -11,11 +11,15 @@ body {
 	vertical-align: top;
 }
 
-input {
+input[type=number] {
+	border-style: none none solid none;
+	border-width: thin;
+	//border-color: ;
+	background-color: inherit;
+	width: 3em;
 	margin-left: 0.5em;
 	text-align: right;
-	color: black;
-	clear: both;
+	//clear: both;
 }
 
 ul.tabs {
@@ -38,31 +42,35 @@ ul.tabs li.current {
 	color: white;
 }
 
-/*.tab-content {
-	display: none;
-	background: #ededed;
-	padding: 15px;
+/*
+#calc-app {
+	//display: flex;
 }
-
-.tab-content.current {
-	//display: inherit;
-}*/
+*/
 
 .calc-form {
-	display: flex;
+	display: none;
 	margin: 16px;
 	margin-top: 0;
 	padding: 16px;
 	background-color: #2C3137;
 }
 
+.calc-form.current {
+	display: flex;
+}
+
 .panel {
+	/*display: flex;
+	flex-direction: column;
+	justify-content: space-between;*/
 	margin: 1em auto;
 	padding: 1em;
 	box-shadow: 1px 1px 3px 0px black;
 }
 
 .panel-label {
+	display: block;
 	margin-bottom: 1em;
 	font-size: large;
 	text-align: right;
@@ -72,3 +80,15 @@ ul.tabs li.current {
 	margin-bottom: 0.5em;
 	//display: table-row;
 }
+
+.input-box {
+	float: right;
+}
+
+tr:nth-child(even) {
+	background-color: #2C3137;
+}
+
+/*.irs {
+	margin-top: 0.5em;
+}*/
