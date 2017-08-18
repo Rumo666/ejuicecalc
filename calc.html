@@ -65,7 +65,7 @@
 					<div class="panel-row">
 						<label>Разбавитель:</label>
 						<div class="input-box">
-							<input id="diluentBase" type="number" step="1" min="0" max="50" />
+							<input id="diluentBase" type="number" step="1" min="0" max="100" />
 							<span> %</span>
 						</div>
 					</div>
@@ -78,20 +78,20 @@
 					<label class="panel-label">Жидкость</label>
 					
 					<div class="panel-row">
-						<label>Объем:</label>
+						<label>Никотин:</label>
 						<div class="input-box">
-							<input id="juiceVolume" type="number" step="5" min="0" max="100" />
-							<span>мл</span>
+							<input id="nicJuice" type="number" step="1" min="0" max="36" />
+							<span> мг/мл</span>
 						</div>
 					</div>
 					<div class="panel-row">
-						<input type="text" id="juiceVolumeSlider" value="" />
+						<input type="text" id="nicJuiceSlider" value="" />
 					</div>
 					
 					<div class="panel-row">
 						<label>Глицерин:</label>
 						<div class="input-box">
-							<input id="vgJuice" type="number" step="5" min="0" max="100" />
+							<input id="vgJuice" type="number" min="0" max="100" />
 							<span> %</span>
 						</div>
 					</div>
@@ -102,7 +102,7 @@
 					<div class="panel-row">
 						<label>Пропиленгликоль:</label>
 						<div class="input-box">
-							<input id="pgJuice" type="number" step="5" min="0" max="100" />
+							<input id="pgJuice" type="number" min="0" max="100" />
 							<span> %</span>
 						</div>
 					</div>
@@ -110,6 +110,49 @@
 						<input type="text" id="pgJuiceSlider" value="" />
 					</div>
 
+					<div class="panel-row">
+						<label>Разбавитель:</label>
+						<div class="input-box">
+							<input id="diluentJuice" type="number" min="0" max="100" />
+							<span> %</span>
+						</div>
+					</div>
+					<div class="panel-row">
+						<input type="text" id="diluentJuiceSlider" value="" />
+					</div>
+					
+					<div class="panel-row">
+						<label>Ароматизаторы (ПГ):</label>
+						<div class="input-box">
+							<input id="pgFlavors" type="number" min="0" max="50" />
+							<span> %</span>
+						</div>
+					</div>
+					<div class="panel-row">
+						<input type="text" id="pgFlavorsSlider" value="" />
+					</div>
+					
+					<div class="panel-row">
+						<label>Ароматизаторы (ВГ):</label>
+						<div class="input-box">
+							<input id="vgFlavors" type="number" min="0" max="50" />
+							<span> %</span>
+						</div>
+					</div>
+					<div class="panel-row">
+						<input type="text" id="vgFlavorsSlider" value="" />
+					</div>
+
+					<div class="panel-row">
+						<label>Объем:</label>
+						<div class="input-box">
+							<input id="juiceVolume" type="number" min="1" max="500" value="120"/>
+							<span>мл</span>
+						</div>
+					</div>
+				</div>
+
+				<!--<div class="panel">
 					<div class="panel-row">
 						<label>Разбавитель:</label>
 						<div class="input-box">
@@ -121,17 +164,6 @@
 						<input type="text" id="diluentJuiceSlider" value="" />
 					</div>
 					
-					<div class="panel-row">
-						<label>Никотин:</label>
-						<div class="input-box">
-							<input id="nicJuice" type="number" step="1" min="0" max="36" />
-							<span> мг/мл</span>
-						</div>
-					</div>
-					<div class="panel-row">
-						<input type="text" id="nicJuiceSlider" value="" />
-					</div>
-
 					<div class="panel-row">
 						<label>Ароматизаторы (ПГ):</label>
 						<div class="input-box">
@@ -153,7 +185,15 @@
 					<div class="panel-row">
 						<input type="text" id="vgFlavorsSlider" value="" />
 					</div>
-				</div>
+
+					<div class="panel-row">
+						<label>Объем:</label>
+						<div class="input-box">
+							<input id="juiceVolume" type="number" step="5" min="0" max="100" value="120"/>
+							<span>мл</span>
+						</div>
+					</div>
+				</div>-->
 
 				<div class="panel">
 					<label class="panel-label">Результат</label>
@@ -165,9 +205,38 @@
 						<tr>
 							<td>Основа</td>
 							<td id="baseVolume">???</td>
+						</tr>
+						<tr>
+							<td style="padding-left: 1em">Глицерин</td>
+							<td id="vgBaseVolume">???</td>
+						</tr>
+						<tr>
+							<td style="padding-left: 1em">Пропиленгликоль</td>
+							<td id="pgBaseVolume">???</td>
+						</tr>
+						<tr>
+							<td style="padding-left: 1em">Разбавитель</td>
+							<td id="diluentBaseVolume">???</td>
+						</tr>
 						<tr>
 							<td>Глицерин</td>
 							<td id="vgVolume">???</td>
+						</tr>
+						<tr>
+							<td>Пропиленгликоль</td>
+							<td id="pgVolume">???</td>
+						</tr>
+						<tr>
+							<td>Разбавитель</td>
+							<td id="diluentVolume">???</td>
+						</tr>
+						<tr>
+							<td>Ароматизаторы (ПГ)</td>
+							<td id="pgFlavorsVolume">???</td>
+						</tr>
+						<tr>
+							<td>Ароматизаторы (ВГ)</td>
+							<td id="vgFlavorsVolume">???</td>
 						</tr>
 					</table>
 				</div>
