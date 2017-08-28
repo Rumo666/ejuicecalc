@@ -19,6 +19,7 @@ $(document).ready(function() {
 		step: 1,
 		postfix: "%",
 		from: 0,
+		from_shadow: true,
 
 		onStart: function(data) {
 			$("#vgBase").val(data.from);
@@ -32,13 +33,14 @@ $(document).ready(function() {
 		step: 1,
 		postfix: "%",
 		from: 100,
+		from_shadow: true,
 
 		onStart: function(data) {
 			$("#pgBase").val(data.from);
 		}
 	});
 
-	$("#diluentBaseSlider").ionRangeSlider({
+	$("#thinnerBaseSlider").ionRangeSlider({
 		type: "single",
 		min: 0,
 		max: 100,
@@ -47,7 +49,7 @@ $(document).ready(function() {
 		from: 0,
 
 		onStart: function(data) {
-			$("#diluentBase").val(data.from);
+			$("#thinnerBase").val(data.from);
 		}
 	});
 
@@ -72,6 +74,7 @@ $(document).ready(function() {
 		step: 1,
 		postfix: "%",
 		from: 50,
+		from_shadow: true,
 
 		onStart: function(data) {
 			$("#vgJuice").val(data.from);
@@ -85,13 +88,14 @@ $(document).ready(function() {
 		step: 1,
 		postfix: "%",
 		from: 50,
+		from_shadow: true,
 
 		onStart: function(data) {
 			$("#pgJuice").val(data.from);
 		}
 	});
 
-	$("#diluentJuiceSlider").ionRangeSlider({
+	$("#thinnerJuiceSlider").ionRangeSlider({
 		type: "single",
 		min: 0,
 		max: 100,
@@ -100,7 +104,7 @@ $(document).ready(function() {
 		from: 0,
 
 		onStart: function(data) {
-			$("#diluentJuice").val(data.from);
+			$("#thinnerJuice").val(data.from);
 		}
 	});
 
@@ -111,6 +115,7 @@ $(document).ready(function() {
 		step: 1,
 		postfix: "%",
 		from: 5,
+		from_shadow: true,
 
 		onStart: function(data) {
 			$("#pgFlavors").val(data.from);
@@ -124,6 +129,7 @@ $(document).ready(function() {
 		step: 1,
 		postfix: "%",
 		from: 0,
+		from_shadow: true,
 
 		onStart: function(data) {
 			$("#vgFlavors").val(data.from);
@@ -133,8 +139,8 @@ $(document).ready(function() {
 	$("#nicJuiceSlider").ionRangeSlider({
 		type: "single",
 		min: 0,
-		max: 36,
-		step: 1,
+		max: 50,
+		step: 0.1,
 		postfix: " мг/мл",
 		from: 3,
 
@@ -147,24 +153,24 @@ $(document).ready(function() {
 	var base = {
 		$vgSlider: $("#vgBaseSlider").data("ionRangeSlider"),
 		$pgSlider: $("#pgBaseSlider").data("ionRangeSlider"),
-		$diluentSlider: $("#diluentBaseSlider").data("ionRangeSlider"),
+		$thinnerSlider: $("#thinnerBaseSlider").data("ionRangeSlider"),
 		$nicSlider: $("#nicBaseSlider").data("ionRangeSlider"),
 		
 		$vgInput: $("#vgBase"),
 		$pgInput: $("#pgBase"),
-		$diluentInput: $("#diluentBase"),
+		$thinnerInput: $("#thinnerBase"),
 		$nicInput: $("#nicBase"),
 
 		vgValue: $("#vgBaseSlider").data("from"),
 		pgValue: $("#pgBaseSlider").data("from"),
-		diluentValue: $("#diluentBaseSlider").data("from"),
+		thinnerValue: $("#thinnerBaseSlider").data("from"),
 		nicStrength: $("#nicBaseSlider").data("from"),
 	};
 
 	var juice = {
 		$vgSlider: $("#vgJuiceSlider").data("ionRangeSlider"),
 		$pgSlider: $("#pgJuiceSlider").data("ionRangeSlider"),
-		$diluentSlider: $("#diluentJuiceSlider").data("ionRangeSlider"),
+		$thinnerSlider: $("#thinnerJuiceSlider").data("ionRangeSlider"),
 		$pgFlavorsSlider: $("#pgFlavorsSlider").data("ionRangeSlider"),
 		$vgFlavorsSlider: $("#vgFlavorsSlider").data("ionRangeSlider"),
 		$nicSlider: $("#nicJuiceSlider").data("ionRangeSlider"),
@@ -172,7 +178,7 @@ $(document).ready(function() {
 		$volumeInput: $("#juiceVolume"),
 		$vgInput: $("#vgJuice"),
 		$pgInput: $("#pgJuice"),
-		$diluentInput: $("#diluentJuice"),
+		$thinnerInput: $("#thinnerJuice"),
 		$pgFlavorsInput: $("#pgFlavors"),
 		$vgFlavorsInput: $("#vgFlavors"),
 		$nicInput: $("#nicJuice"),
@@ -180,45 +186,46 @@ $(document).ready(function() {
 		volume: parseInt($("#juiceVolume").val()),
 		vgValue: $("#vgJuiceSlider").data("from"),
 		pgValue: $("#pgJuiceSlider").data("from"),
-		diluentValue: $("#diluentJuiceSlider").data("from"),
+		thinnerValue: $("#thinnerJuiceSlider").data("from"),
 		pgFlavorsValue: $("#pgFlavorsSlider").data("from"),
 		vgFlavorsValue: $("#vgFlavorsSlider").data("from"),
-		nicStrength: $("#nicJuiceSlider").data("from")
-		
+		nicStrength: $("#nicJuiceSlider").data("from"),
 	}
+	
+	// Storing it inside the object for convenience of calculations
+	// Reduced from 0..1 to 1..100, initialised in baseChange() call
+	juice.baseValues = {};
 
 	function calcLiquid() {
-		var baseVolume = (juice.nicStrength / base.nicStrength) * juice.volume,
+		var baseVolume =  juice.volume * (juice.baseValues.base / 100),
 			vgBaseVolume = baseVolume * (base.vgValue / 100),
 			pgBaseVolume = baseVolume * (base.pgValue / 100),
-			diluentBaseVolume = baseVolume * (base.diluentValue / 100),
+			thinnerBaseVolume = baseVolume * (base.thinnerValue / 100),
 			
 			vgFlavorsVolume = juice.volume * (juice.vgFlavorsValue / 100),
 			pgFlavorsVolume = juice.volume * (juice.pgFlavorsValue / 100),
 			vgVolume = juice.volume * (juice.vgValue / 100) - vgBaseVolume - vgFlavorsVolume,
 			pgVolume = juice.volume * (juice.pgValue / 100) - pgBaseVolume - pgFlavorsVolume,
-			diluentVolume = juice.volume * (juice.diluentValue / 100);
+			thinnerVolume = juice.volume * (juice.thinnerValue / 100);
 		
-		//console.log(vgBaseVolume + '\n' + pgBaseVolume + '\n' + diluentBaseVolume);
-		console.log(vgFlavorsVolume, pgFlavorsVolume);
+		//console.log(vgBaseVolume + '\n' + pgBaseVolume + '\n' + thinnerBaseVolume);
+		//console.log(vgFlavorsVolume, pgFlavorsVolume);
 		$("#baseVolume").html(baseVolume.toFixed(2));
 		$("#vgBaseVolume").html(vgBaseVolume.toFixed(2));
 		$("#pgBaseVolume").html(pgBaseVolume.toFixed(2));
-		$("#diluentBaseVolume").html(diluentBaseVolume.toFixed(2));
+		$("#thinnerBaseVolume").html(thinnerBaseVolume.toFixed(2));
 
 		$("#vgVolume").html(vgVolume.toFixed(2));
 		$("#pgVolume").html(pgVolume.toFixed(2));
-		$("#diluentVolume").html(diluentVolume.toFixed(2));
+		$("#thinnerVolume").html(thinnerVolume.toFixed(2));
 		$("#vgFlavorsVolume").html(vgFlavorsVolume.toFixed(2));
 		$("#pgFlavorsVolume").html(pgFlavorsVolume.toFixed(2));
 	}
 	
-	calcLiquid();
-	
 	// Keep input values in range
 	function checkInputRange($input) {
-		var max = parseInt($input.attr('max'));
-		var min = parseInt($input.attr('min'));
+		var max = parseFloat($input.attr('max'));
+		var min = parseFloat($input.attr('min'));
 		if ($input.val() > max) {
 			$input.val(max);
 		}
@@ -228,7 +235,7 @@ $(document).ready(function() {
 	}
 	
 	function pgVgSliderChange(component, value, source) {
-		var residue = 100 - source.diluentValue;
+		var residue = 100 - source.thinnerValue;
 		switch(component) {
 			case "pg":
 				source.$pgInput.val(value);
@@ -251,7 +258,7 @@ $(document).ready(function() {
 	}
 
 	function pgVgInputChange(component, value, source) {
-		var residue = 100 - source.diluentValue;
+		var residue = 100 - source.thinnerValue;
 		switch(component) {
 			case "pg":
 				source.pgValue = value;
@@ -282,25 +289,75 @@ $(document).ready(function() {
 				break;
 		}
 	}
+	
+	function baseChange(base, source){
+		// This should be called only if 'source' contains nic base, but checking anyway
+		if(source.hasOwnProperty('baseValues')) {
+			source.baseValues.base = source.nicStrength / base.nicStrength * 100;
+			source.baseValues.pg = source.baseValues.base * base.pgValue / 100,
+			source.baseValues.vg = source.baseValues.base * base.vgValue / 100,
+			source.baseValues.thinner = source.baseValues.base * base.thinnerValue / 100;
 
-	function flavorsChange(source) {
-			source.$vgFlavorsSlider.update({ max: source.vgValue });
-			source.$vgFlavorsInput.attr("max", source.vgValue);
-			checkInputRange(source.$vgFlavorsInput);
-			if(source.vgFlavorsValue > source.vgValue) {
-				source.vgFlavorsValue = source.vgValue;
-			} 
+			source.baseValues.base = parseFloat(source.baseValues.base.toFixed(2)),
+			source.baseValues.pg = parseFloat(source.baseValues.pg.toFixed(2)),
+			source.baseValues.vg = parseFloat(source.baseValues.vg.toFixed(2)),
+			source.baseValues.thinner = parseFloat(source.baseValues.thinner.toFixed(2));
 
-			source.$pgFlavorsSlider.update({ max: source.pgValue });
-			source.$pgFlavorsInput.attr("max", source.pgValue);
-			checkInputRange(source.$pgFlavorsInput);
-			if(source.pgFlavorsValue > source.pgValue) {
-				source.pgFlavorsValue = source.pgValue;
-			} 
+			source.$vgSlider.update({
+				from_min: Math.ceil(source.baseValues.vg),
+				from_max: Math.floor(100 - source.thinnerValue - source.baseValues.pg)
+			});
+			source.$pgSlider.update({
+				from_min: Math.ceil(source.baseValues.pg),
+				from_max: Math.floor(100 - source.thinnerValue - source.baseValues.vg)
+			});
+			source.$thinnerSlider.update({ from_min: Math.ceil(source.baseValues.thinner) });
+			source.$pgFlavorsSlider.update({ from_max: Math.floor(source.pgValue - source.baseValues.pg) });
+			source.$vgFlavorsSlider.update({ from_max: Math.floor(source.vgValue - source.baseValues.vg) });
+			
+			source.$vgInput.attr("min", (source.baseValues.vg));
+			source.$pgInput.attr("min", (source.baseValues.pg));
+			source.$thinnerInput.attr("min", source.baseValues.thinner);
+			source.$pgFlavorsInput.attr("max", source.vgValue - source.baseValues.pg);
+			source.$vgFlavorsInput.attr("max", source.vgValue - source.baseValues.vg);
+
+			console.log("base: " + source.baseValues.base);
+			console.log("pg: " + source.baseValues.pg);
+			console.log("vg: " + source.baseValues.vg);
+			console.log("thinner: " + source.baseValues.thinner);
+			/*if(parseFloat(source.baseValues.pg + source.baseValues.vg + source.baseValues.thinner).toFixed(2) != source.baseValues.base) {
+				alert("Base proportion mismatch!");
+				console.log(Array(31).join("^"));
+			}*/
+		}
 	}
 
-	function diluentChange(value, source) {
-		var delta = value - source.diluentValue,
+	function flavorsChange(source) {
+		var vgLimit = source.vgValue,
+			pgLimit = source.pgValue;
+
+		if(source.hasOwnProperty('baseValues')) {
+			vgLimit -= source.baseValues.vg;
+			pgLimit -= source.baseValues.pg;
+		}
+
+		source.$vgFlavorsSlider.update({ from_max: Math.floor(vgLimit) });
+		source.$vgFlavorsInput.attr("max", vgLimit);
+		checkInputRange(source.$vgFlavorsInput);
+		if(source.vgFlavorsValue > vgLimit) {
+			source.vgFlavorsValue = vgLimit;
+		} 
+
+		source.$pgFlavorsSlider.update({ from_max: Math.floor(pgLimit) });
+		source.$pgFlavorsInput.attr("max", pgLimit);
+		checkInputRange(source.$pgFlavorsInput);
+		if(source.pgFlavorsValue > pgLimit) {
+			source.pgFlavorsValue = pgLimit;
+		} 
+	}
+
+	function thinnerChange(value, source) {
+		var delta = value - source.thinnerValue,
 			residue = 100 - value;
 
 		if(delta != 0) {
@@ -320,19 +377,24 @@ $(document).ready(function() {
 			// delta = 0
 		}
 
-		source.$vgSlider.update({from: source.vgValue, max: residue});
-		source.$pgSlider.update({from: source.pgValue, max: residue});
+		source.$vgSlider.update({from: source.vgValue, from_max: residue});
+		source.$pgSlider.update({from: source.pgValue, from_max: residue});
 		source.$vgInput.val(source.vgValue);
 		source.$vgInput.attr("max", residue);
 		source.$pgInput.val(source.pgValue);
 		source.$pgInput.attr("max", residue);
 	}
 
+	baseChange(base, juice);
+	calcLiquid();
+	
+
 	// PG/VG sliders and inputs are synced to get 100% in total
 	// Base sliders
 	base.$vgSlider.update({
 		onChange: function(data) {
 			pgVgSliderChange("vg", data.from, base);
+			baseChange(base, juice);
 			calcLiquid();
 		}
 	});
@@ -340,15 +402,18 @@ $(document).ready(function() {
 	base.$pgSlider.update({
 		onChange: function(data) {
 			pgVgSliderChange("pg", data.from, base);
+			baseChange(base, juice);
 			calcLiquid();
 		}
 	});
 	
-	base.$diluentSlider.update({
+	base.$thinnerSlider.update({
 		onChange: function(data) {
-			base.$diluentInput.val(data.from);
-			diluentChange(data.from, base);
-			base.diluentValue = data.from;
+			base.$thinnerInput.val(data.from);
+			thinnerChange(data.from, base);
+			
+			base.thinnerValue = data.from;
+			baseChange(base, juice);
 			calcLiquid();
 		}
 	});
@@ -357,6 +422,15 @@ $(document).ready(function() {
 		onChange: function(data) {
 			base.$nicInput.val(data.from);
 			base.nicStrength = data.from;
+
+			if(juice.nicStrength > data.from) {
+				juice.nicStrength = data.from;
+				juice.$nicSlider.update({ from: data.from });
+				juice.$nicInput.val(data.from);
+			}
+			juice.$nicSlider.update({ from_max: data.from });
+
+			baseChange(base, juice);
 			calcLiquid();
 		}
 	});
@@ -366,6 +440,7 @@ $(document).ready(function() {
 		checkInputRange($(this));
 		
 		pgVgInputChange("vg", $(this).val(), base);
+		baseChange(base, juice);
 		calcLiquid();
 	});
 	
@@ -373,15 +448,17 @@ $(document).ready(function() {
 		checkInputRange($(this));
 		
 		pgVgInputChange("pg", $(this).val(), base);
+		baseChange(base, juice);
 		calcLiquid();
 	});
 
-	base.$diluentInput.change(function() {
+	base.$thinnerInput.change(function() {
 		checkInputRange($(this));
 		
-		base.$diluentSlider.update({ from: $(this).val() });
-		diluentChange($(this).val(), base);
-		base.diluentValue = $(this).val();
+		base.$thinnerSlider.update({ from: $(this).val() });
+		thinnerChange($(this).val(), base);
+		base.thinnerValue = $(this).val();
+		baseChange(base, juice);
 		calcLiquid();
 	});
 
@@ -390,11 +467,23 @@ $(document).ready(function() {
 
 		base.$nicSlider.update({ from: $(this).val() });
 		base.nicStrength = $(this).val();
+		baseChange(base, juice);
 		calcLiquid();
 	});
 	
 	// Juice sliders
+	juice.$nicSlider.update({
+		onChange: function(data) {
+			juice.$nicInput.val(data.from);
+			juice.nicStrength = data.from;
+			baseChange(base, juice);
+			calcLiquid();
+		}
+	});
+
 	juice.$vgSlider.update({
+		//from_min: Math.ceil(juice.baseValues.vg),
+
 		onChange: function(data) {
 			pgVgSliderChange("vg", data.from, juice);
 			flavorsChange(juice);
@@ -403,6 +492,8 @@ $(document).ready(function() {
 	});
 	
 	juice.$pgSlider.update({
+		//from_min: Math.ceil(juice.baseValues.pg),
+
 		onChange: function(data) {
 			pgVgSliderChange("pg", data.from, juice);
 			flavorsChange(juice);
@@ -410,25 +501,19 @@ $(document).ready(function() {
 		}
 	});
 	
-	juice.$diluentSlider.update({
-		onChange: function(data) {
-			juice.$diluentInput.val(data.from);
-			diluentChange(data.from, juice);
-			juice.diluentValue = data.from;
-			calcLiquid();
-		}
-	});
+	juice.$thinnerSlider.update({
+		from_min: juice.baseValues.thinner,
 
-	juice.$nicSlider.update({
 		onChange: function(data) {
-			juice.$nicInput.val(data.from);
-			juice.nicStrength = data.from;
+			juice.$thinnerInput.val(data.from);
+			thinnerChange(data.from, juice);
+			juice.thinnerValue = data.from;
 			calcLiquid();
 		}
 	});
 
 	juice.$pgFlavorsSlider.update({
-		max: juice.pgValue,
+		from_max: juice.pgValue,
 		onChange: function(data) {
 			juice.$pgFlavorsInput.val(data.from);
 			juice.pgFlavorsValue = data.from;
@@ -437,7 +522,7 @@ $(document).ready(function() {
 	});
 
 	juice.$vgFlavorsSlider.update({
-		max: juice.vgValue,
+		from_max: juice.vgValue,
 		onChange: function(data) {
 			juice.$vgFlavorsInput.val(data.from);
 			juice.vgFlavorsValue = data.from;
@@ -446,24 +531,45 @@ $(document).ready(function() {
 	});
 
 	// Juice inputs
+	juice.$nicInput.change(function() {
+		checkInputRange($(this));
+		juice.$nicSlider.update({ from: $(this).val() });
+		juice.nicStrength = $(this).val();
+		calcLiquid();
+	});
+
 	juice.$vgInput.change(function() {
 		checkInputRange($(this));
 		pgVgInputChange("vg", $(this).val(), juice);
+		flavorsChange(juice);
+		calcLiquid();
 	});
 	
 	juice.$pgInput.change(function() {
 		checkInputRange($(this));
 		pgVgInputChange("pg", $(this).val(), juice);
+		flavorsChange(juice);
+		calcLiquid();
 	});
-	
+
 	juice.$pgFlavorsInput.change(function() {
 		checkInputRange($(this));
 		juice.$pgFlavorsSlider.update({ from: $(this).val() });
+		juice.pgFlavorsValue = $(this).val();
+		calcLiquid();
 	});
 	
 	juice.$vgFlavorsInput.change(function() {
 		checkInputRange($(this));
 		juice.$vgFlavorsSlider.update({ from: $(this).val() });
+		juice.vgFlavorsValue = $(this).val();
+		calcLiquid();
 	});
+
+	juice.$volumeInput.change(function() {
+		checkInputRange($(this));
+		juice.volume = $(this).val();
+		calcLiquid();
+	})
 });
 
