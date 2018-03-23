@@ -192,6 +192,57 @@ $(document).ready(function() {
 		nicStrength: $("#nicJuiceSlider").data("from"),
 	}
 	
+	// Mixer objects
+	var mix1 = {
+		$vgMix1Slider: $("#vgJuiceMix1Slider").data("ionRangeMix1Slider"),
+		$pgMix1Slider: $("#pgJuiceMix1Slider").data("ionRangeMix1Slider"),
+		$thinnerMix1Slider: $("#thinnerJuiceMix1Slider").data("ionRangeMix1Slider"),
+		$pgFlavorsMix1Slider: $("#pgFlavorsMix1Slider").data("ionRangeMix1Slider"),
+		$vgFlavorsMix1Slider: $("#vgFlavorsMix1Slider").data("ionRangeMix1Slider"),
+		$nicMix1Slider: $("#nicJuiceMix1Slider").data("ionRangeMix1Slider"),
+		
+		$volumeInput: $("#mix1Volume"),
+		$vgInput: $("#vgMix1"),
+		$pgInput: $("#pgMix1"),
+		$thinnerInput: $("#thinnerMix1"),
+		$pgFlavorsInput: $("#pgFlavorsMix1"),
+		$vgFlavorsInput: $("#vgFlavorsMix1"),
+		$nicInput: $("#nicMix1"),
+
+		volume: parseInt($("#mix1Volume").val()),
+		vgValue: $("#vgMix1Slider").data("from"),
+		pgValue: $("#pgMix1Slider").data("from"),
+		thinnerValue: $("#thinnerMix1Slider").data("from"),
+		pgFlavorsValue: $("#pgFlavorsMix1Slider").data("from"),
+		vgFlavorsValue: $("#vgFlavorsMix1Slider").data("from"),
+		nicStrength: $("#nicMix1Slider").data("from"),
+	}
+
+	var mix2 = {
+		$vgMix2Slider: $("#vgJuiceMix2Slider").data("ionRangeMix2Slider"),
+		$pgMix2Slider: $("#pgJuiceMix2Slider").data("ionRangeMix2Slider"),
+		$thinnerMix2Slider: $("#thinnerJuiceMix2Slider").data("ionRangeMix2Slider"),
+		$pgFlavorsMix2Slider: $("#pgFlavorsMix2Slider").data("ionRangeMix2Slider"),
+		$vgFlavorsMix2Slider: $("#vgFlavorsMix2Slider").data("ionRangeMix2Slider"),
+		$nicMix2Slider: $("#nicJuiceMix2Slider").data("ionRangeMix2Slider"),
+		
+		$volumeInput: $("#mix2Volume"),
+		$vgInput: $("#vgMix2"),
+		$pgInput: $("#pgMix2"),
+		$thinnerInput: $("#thinnerMix2"),
+		$pgFlavorsInput: $("#pgFlavorsMix2"),
+		$vgFlavorsInput: $("#vgFlavorsMix2"),
+		$nicInput: $("#nicMix2"),
+
+		volume: parseInt($("#mix2Volume").val()),
+		vgValue: $("#vgMix2Slider").data("from"),
+		pgValue: $("#pgMix2Slider").data("from"),
+		thinnerValue: $("#thinnerMix2Slider").data("from"),
+		pgFlavorsValue: $("#pgFlavorsMix2Slider").data("from"),
+		vgFlavorsValue: $("#vgFlavorsMix2Slider").data("from"),
+		nicStrength: $("#nicMix2Slider").data("from"),
+	}
+	
 	// Storing it inside the object for convenience of calculations
 	// Reduced from 0..1 to 1..100, initialised in baseChange() call
 	juice.baseValues = {};
@@ -206,7 +257,7 @@ $(document).ready(function() {
 			pgFlavorsVolume = juice.volume * (juice.pgFlavorsValue / 100),
 			vgVolume = juice.volume * (juice.vgValue / 100) - vgBaseVolume - vgFlavorsVolume,
 			pgVolume = juice.volume * (juice.pgValue / 100) - pgBaseVolume - pgFlavorsVolume,
-			thinnerVolume = juice.volume * (juice.thinnerValue / 100);
+			thinnerVolume = juice.volume * (juice.thinnerValue / 100) - juice.baseValues.thinner;
 		
 		//console.log(vgBaseVolume + '\n' + pgBaseVolume + '\n' + thinnerBaseVolume);
 		//console.log(vgFlavorsVolume, pgFlavorsVolume);
@@ -293,7 +344,14 @@ $(document).ready(function() {
 	function baseChange(base, source){
 		// This should be called only if 'source' contains nic base, but checking anyway
 		if(source.hasOwnProperty('baseValues')) {
-			source.baseValues.base = source.nicStrength / base.nicStrength * 100;
+			if(base.nicStrength > 0) {
+				source.baseValues.base = Number((source.nicStrength / base.nicStrength * 100).toFixed(2));
+				source.baseValues.pg = Number((source.baseValues.base * base.pgValue / 100).toFixed(2)),
+				source.baseValues.vg = Number((source.baseValues.base * base.vgValue / 100).toFixed(2)),
+				source.baseValues.thinner = Number((source.baseValues.base * base.thinnerValue / 100).toFixed(2));
+			}
+			
+			/*source.baseValues.base = source.nicStrength / base.nicStrength * 100;
 			source.baseValues.pg = source.baseValues.base * base.pgValue / 100,
 			source.baseValues.vg = source.baseValues.base * base.vgValue / 100,
 			source.baseValues.thinner = source.baseValues.base * base.thinnerValue / 100;
@@ -301,15 +359,15 @@ $(document).ready(function() {
 			source.baseValues.base = parseFloat(source.baseValues.base.toFixed(2)),
 			source.baseValues.pg = parseFloat(source.baseValues.pg.toFixed(2)),
 			source.baseValues.vg = parseFloat(source.baseValues.vg.toFixed(2)),
-			source.baseValues.thinner = parseFloat(source.baseValues.thinner.toFixed(2));
+			source.baseValues.thinner = parseFloat(source.baseValues.thinner.toFixed(2));*/
 
 			source.$vgSlider.update({
-				from_min: Math.ceil(source.baseValues.vg),
-				from_max: Math.floor(100 - source.thinnerValue - source.baseValues.pg)
+				from_min: (source.baseValues.vg),
+				from_max: (100 - source.thinnerValue - source.baseValues.pg)
 			});
 			source.$pgSlider.update({
-				from_min: Math.ceil(source.baseValues.pg),
-				from_max: Math.floor(100 - source.thinnerValue - source.baseValues.vg)
+				from_min: (source.baseValues.pg),
+				from_max: (100 - source.thinnerValue - source.baseValues.vg)
 			});
 			source.$thinnerSlider.update({ from_min: Math.ceil(source.baseValues.thinner) });
 			source.$pgFlavorsSlider.update({ from_max: Math.floor(source.pgValue - source.baseValues.pg) });
@@ -474,6 +532,16 @@ $(document).ready(function() {
 	// Juice sliders
 	juice.$nicSlider.update({
 		onChange: function(data) {
+			if(data.from == 0) {
+				if(!$("#basePanel").hasClass("disabled")) {
+					$("#basePanel").addClass("disabled");
+				}
+			} else {
+				if($("#basePanel").hasClass("disabled")) {
+					$("#basePanel").removeClass("disabled");
+				}
+			}
+
 			juice.$nicInput.val(data.from);
 			juice.nicStrength = data.from;
 			baseChange(base, juice);

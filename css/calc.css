@@ -42,11 +42,12 @@ ul.tabs li.current {
 	color: white;
 }
 
-/*
+
 #calc-app {
-	//display: flex;
+	margin: auto;
+	max-width: 1000px;
 }
-*/
+
 
 .calc-form {
 	display: none;
@@ -54,6 +55,9 @@ ul.tabs li.current {
 	margin-top: 0;
 	padding: 16px;
 	background-color: #2C3137;
+
+	flex-wrap: wrap;
+	flex-direction: row;
 }
 
 .calc-form.current {
@@ -71,6 +75,11 @@ ul.tabs li.current {
 	min-width: 240px;
 	box-shadow: 1px 1px 3px 0px black;
 	
+}
+
+.panel.disabled {
+	opacity: 0.4;
+	pointer-events: none;
 }
 
 .panel-label {
